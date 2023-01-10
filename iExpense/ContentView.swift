@@ -14,12 +14,9 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             List {
-                ForEach(expences.items) { item in
-                    Text(item.name)
-                }
-                .onDelete { indexSet in
-                    removeItems(at: indexSet)
-                }
+                ExpenseSection(title: "Business", expences: expences.businessItems, deleteItems: removeBusinessItems)
+                
+                ExpenseSection(title: "Personal", expences: expences.personalItems, deleteItems: removePersonalItems)
             }
             .navigationTitle("iExpence")
             .toolbar {
@@ -35,8 +32,27 @@ struct ContentView: View {
         }
     }
     
-    func removeItems(at offsets: IndexSet) {
-        expences.items.remove(atOffsets: offsets)
+    func removeItems(at offsets: IndexSet, in inputArray: [ExpenceItem]) {
+        var objectsToDelete = IndexSet()
+        
+        for offset in offsets {
+            let item = inputArray[offset]
+            
+            if let index = expences.items.firstIndex(of: item) {
+                objectsToDelete.insert(index)
+            }
+            
+        }
+        
+        expences.items.remove(atOffsets: objectsToDelete)
+    }
+    
+    func removePersonalItems(at offsets: IndexSet) {
+        removeItems(at: offsets, in: expences.personalItems)
+    }
+    
+    func removeBusinessItems(at offsets: IndexSet) {
+        removeItems(at: offsets, in: expences.businessItems)
     }
 }
 
