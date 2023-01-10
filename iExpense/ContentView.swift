@@ -9,11 +9,12 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject var expences = Expences()
+    @State private var showingAddExpence = false
     
     var body: some View {
         NavigationView {
             List {
-                ForEach(expences.items, id: \.name) { item in
+                ForEach(expences.items) { item in
                     Text(item.name)
                 }
                 .onDelete { indexSet in
@@ -23,12 +24,13 @@ struct ContentView: View {
             .navigationTitle("iExpence")
             .toolbar {
                 Button {
-                    let expence = ExpenceItem(name: "Test", type: "Personal", amount: 5)
-                    
-                    expences.items.append(expence)
+                    showingAddExpence = true
                 } label: {
                     Image(systemName: "plus")
                 }
+            }
+            .sheet(isPresented: $showingAddExpence) {
+                AddView(expences: expences)
             }
         }
     }
